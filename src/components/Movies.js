@@ -1,16 +1,19 @@
 // importar la funcion getMovies (que trae el el return del fetch (promesa)) 
 import dataResult from '../lib/getMovies'; // Adjust the path as necessary
-import { detailsResult } from '../lib/getMovies';
+import {
+    detailsResult
+} from '../lib/getMovies';
+import {  showMovieDetails } from './Detail.js'; // Adjust the path as necessary
 // el .then lo utilizo porque es una respuesta asincrona
-
+import { navigateTo } from '../router.js';
 // importar la funcion navigateTo
 
 const Movies = () => {
     const ul = document.createElement('ul')
-    
+
 
     return dataResult().then(result => {
-    
+
         const arrayMoviesList = result.results;
 
         arrayMoviesList.forEach(item => {
@@ -35,9 +38,16 @@ const Movies = () => {
             const year = document.createElement('p');
             year.textContent = item.release_date;
 
+
+            const detailButton = document.createElement('button');
+            detailButton.textContent = 'Ver Detalles';
+          //  detailButton.addEventListener('click', () => showMovieDetails(item.id));
+          detailButton.addEventListener('click', () => navigateTo('/detail', { id: item.id }));
+
             liElement.appendChild(originTitle);
             liElement.appendChild(newImage);
             liElement.appendChild(year);
+            liElement.appendChild(detailButton);
             ul.appendChild(liElement);
         });
         return ul;
@@ -48,10 +58,10 @@ const Movies = () => {
         errorMessage.textContent = 'error fetching movies';
         return errorMessage;
     });
-    
+
 };
-        // Función details que maneja los detalles adicionales
-        // aqui no se usa esta funcion
+// Función details que maneja los detalles adicionales
+// aqui no se usa esta funcion
 const details = () => {
     return detailsResult().then(result => {
         const arrayDetailsList = result.results;
@@ -76,4 +86,3 @@ const details = () => {
 
 // Exporta ambas funciones
 export default Movies;
-

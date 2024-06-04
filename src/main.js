@@ -1,6 +1,6 @@
 import { Home } from './views/home.js';
 import {Error } from './views/error.js'
-import {Detail } from './views/detail.js'
+import {DetailView } from './views/detail.js'
 import { setRootEl, setRoutes, onURLChange } from './router.js';
 
 const root = document.getElementById('root');//aqui debe ir el append de app
@@ -11,7 +11,20 @@ const root = document.getElementById('root');//aqui debe ir el append de app
 const routes = {
   '/': Home,
   '/error': Error,
-  '/detail': Detail
+  '/detail': (params) => {
+
+    console.log(params);
+    // Verificar si se pasaron parámetros
+    if (params && params.id) {
+      // Extraer el ID de la película de los parámetros de la URL
+      const { id } = params;
+      // Renderizar la vista de detalles con el ID de la película
+      return DetailView({ id });
+    } else {
+      // Si no se pasaron parámetros, redirigir a la página de error
+      return Error();
+    }
+  }
   // ...
 };
 

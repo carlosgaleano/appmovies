@@ -2,49 +2,41 @@ let ROUTES = {};
 let rootEl;
 
 export const setRootEl = (nodoRoot) => {
-  // assign rootEl
   rootEl = nodoRoot;
 }
 
 export const setRoutes = (routes) => {
-  // optional Throw errors if routes isn't an object
-  // optional Throw errors if routes doesn't define an /error route
-  Object.assign(ROUTES, routes); // assign ROUTES
+  if (typeof routes !== 'object' || !routes['/error']) {
+    throw new Error('Routes must be an object and must define an /error route');
+  }
+  Object.assign(ROUTES, routes);
 }
 
 const queryStringToObject = (queryString) => {
-  // convert query string to URLSearchParams
-  // convert URLSearchParams to an object
-  // return the object
+  const params = new URLSearchParams(queryString);
+  return Object.fromEntries(params.entries());
 }
 
-const renderView = (pathname, props={}) => {
-  // clear the root elemeny
+const renderView = (pathname, props = {}) => {
   rootEl.innerHTML = '';
-  // find the correct view in ROUTES for the pathname
-const allRoutes = Object.keys(ROUTES);
-const correctRoute = allRoutes.filter(routes => pathname == routes);
-  // in case not found render the error view
-  if (correctRoute [0] !== undefined) {
-    //render the correct view passing the value of props
-    // add the view element to the DOM root element
-const route = ROUTES[correctRoute[0]];
-rootEl.appendChild(route()) //aqui esta pendiente pasar las props 
-  }
 
+  const route = ROUTES[pathname] || ROUTES['/error'];
+  rootEl.appendChild(route(props));
+}
 
-} 
+export const navigateTo = (pathname, props = {}) => {
+  const url = new URL(window.location.href);
+  url.pathname = pathname;
+  url.search = new URLSearchParams(props).toString();
+  window.history.pushState({}, '', url.toString());
 
-export const navigateTo = (pathname, props={}) => {
-  // update window history with pushState
-  // render the view with the pathname and props
+  renderView(pathname, props);
 }
 
 export const onURLChange = (location = '/') => {
-  // parse the location for the pathname and search params
+  const url = new URL(window.location.href);
+  const pathname = url.pathname;
+  const searchParams = queryStringToObject(url.search);
 
-  // convert the search params to an object
-
-  // render the view with the pathname and object
-  renderView(location, undefined) // mirar linea 32 y 21
+  renderView(pathname, searchParams);
 }

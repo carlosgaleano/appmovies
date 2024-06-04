@@ -49,3 +49,26 @@ body {
     background-color: #f9f9f9;
   }
 }
+/* Modal.module.css */
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+}
+
+.modal-content {
+  color: white;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
